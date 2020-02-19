@@ -7,6 +7,6 @@ namespace Capstone.DAL
 {
     public interface IReservationSqlDAO
     {
-        IList<Reservation> GetReservations();
+        IList<Reservation> GetAllReservations();
     }
 }

@@ -16,7 +16,7 @@ namespace Capstone.Tests
         private TransactionScope transaction = null;
 
         private string connectionString = "Server=.\\SqlExpress;Database=npcampground;Trusted_Connection=True;";
-        private int newDepartmentId;
+        private int newReservationId;
 
 
         [TestInitialize]
@@ -41,7 +41,7 @@ namespace Capstone.Tests
                 SqlDataReader rdr = cmd.ExecuteReader();
                 if (rdr.Read())
                 {
-                    newDepartmentId = Convert.ToInt32(rdr["newDepartmentId"]);
+                    newReservationId = Convert.ToInt32(rdr["newReservationId"]);
                 }
             }
         }
@@ -54,25 +54,25 @@ namespace Capstone.Tests
         }
 
         [TestMethod]
-        public void TestGetDepartments()
+        public void TestGetReservations()
         {
             //Arrange
-            DepartmentSqlDAO dao = new DepartmentSqlDAO(connectionString);
+            ReservationSqlDAO dao = new ReservationSqlDAO(connectionString);
 
             //Act
-            IList<Department> departments = dao.GetDepartments();
+            IList<Reservation> reservations = dao.GetAllReservations();
             int i = 0;
-            for (; i < departments.Count; i++)
+            for (; i < reservations.Count; i++)
             {
-                if (departments[i].Id == newDepartmentId)
+                if (reservations[i].ReservationId == newReservationId)
                 {
                     break;
                 }
             }
 
             //Assert 
-            Assert.AreEqual(2, departments.Count);
-            Assert.AreEqual("Cosmetics", departments[i].Name);
+            Assert.AreEqual(2, reservations.Count);
+            Assert.AreEqual("-----", reservations[i].Name);
         }
     }
 }

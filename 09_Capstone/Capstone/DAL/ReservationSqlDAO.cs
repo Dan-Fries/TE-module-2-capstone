@@ -18,7 +18,7 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public IList<Reservation> GetReservations()
+        public IList<Reservation> GetAllReservations()
         {
             List<Reservation> reservations = new List<Reservation>();
 

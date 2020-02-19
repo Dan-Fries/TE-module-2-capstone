@@ -8,6 +8,6 @@ namespace Capstone.DAL
 {
     public interface ISiteSqlDAO
     {
-        IList<Site> GetSites();
+        IList<Site> GetAllSites();
     }
 }

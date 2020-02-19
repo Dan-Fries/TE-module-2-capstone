@@ -18,7 +18,7 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public IList<Site> GetSites()
+        public IList<Site> GetAllSites()
         {
             List<Site> sites = new List<Site>();
 
