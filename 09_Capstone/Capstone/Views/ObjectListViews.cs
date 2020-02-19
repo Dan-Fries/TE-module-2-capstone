@@ -9,6 +9,7 @@ namespace Capstone.Views
 {
     public static class ObjectListViews
     {
+
         public static void DisplayParks(IList<Park> parks)
         {
             string[] labels = { "Location:", "Established:", "Area:", "Annual Visitors:" };
@@ -26,6 +27,18 @@ namespace Capstone.Views
             }
         }
 
+        public static void DisplayCampgrounds(IList<Campground> campgrounds)
+        {
+            string[] labels = { "Name", "Open", "Close", "Daily Fee" };
+            Console.WriteLine($"      {labels[0],6} {labels[1],-30} {labels[2],-15} {labels[3],-10}");
+            for (int i = 0; i < campgrounds.Count(); i++)
+            {
+
+                Console.WriteLine($" #{campgrounds[i].CampgroundId}       {campgrounds[i].Name,6} {intToMonth(campgrounds[i].OpenFromMonth),-30} {intToMonth(campgrounds[i].OpenToMonth),-15:d} {campgrounds[i].DailyFee,-10:C}");
+
+            }
+        }
+
         private static void DisplayParagraphWithWordWrap(string text)
         {
             int width = Console.WindowWidth;
@@ -38,8 +51,27 @@ namespace Capstone.Views
             }
         }
 
+        private static string intToMonth(int month)
+        {
+            Dictionary<int, string> numberToMonth = new Dictionary<int, string>()
+            {
+               { 1, "January" },
+               { 2, "February"},
+               { 3, "March"},
+               {4, "April"},
+               {5, "May"},
+               {6, "June"},
+               {7, "July"},
+               {8, "August"},
+               {9, "September"},
+               {10, "October"},
+               {11, "November"},
+               {12, "December"}
 
+            };
 
+            return numberToMonth[month];
+        }
     }
 }
 
