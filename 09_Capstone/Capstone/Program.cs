@@ -1,4 +1,5 @@
-﻿using Capstone.Views;
+﻿using Capstone.DAL;
+using Capstone.Views;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
@@ -22,9 +23,9 @@ namespace Capstone
             // If you do not want to use CLIMenu, you can remove the following
             *********************************************************************/
             // Create any DAOs needed here, and then pass them into main menu...
+            IParkDAO parkDAO = new ParkSqlDAO(connectionString);
 
-
-            MainMenu mainMenu = new MainMenu();  // You'll probably be adding daos to the constructor
+            MainMenu mainMenu = new MainMenu(parkDAO);  // You'll probably be adding daos to the constructor
 
             // Run the menu.
             mainMenu.Run();

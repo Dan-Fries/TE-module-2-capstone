@@ -53,6 +53,39 @@ namespace Capstone.DAL
             return campgrounds;
         }
 
+        public IList<Campground> GetCampgroundsByParkId(int parkId)
+        {
+            // throw new NotImplementedException();
+
+            List<Campground> campgrounds = new List<Campground>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string sql = "SELECT * FROM campground WHERE park_id = @parkId";
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@parkId", parkId);
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        campgrounds.Add(RowToObject(rdr));
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return campgrounds;
+        }
+
 
         ///// <summary>
         ///// Searches the system for an employee by first name or last name.

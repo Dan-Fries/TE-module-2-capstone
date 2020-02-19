@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Capstone.DAL;
+using System;
 using System.Collections.Generic;
 
 namespace Capstone.Views
@@ -9,21 +10,21 @@ namespace Capstone.Views
     public class MainMenu : CLIMenu
     {
         // DAOs - Interfaces to our data objects can be stored here...
-        //protected ICityDAO cityDAO;
+        protected IParkDAO parkDAO;
         //protected ICountryDAO countryDAO;
 
         /// <summary>
         /// Constructor adds items to the top-level menu. YOu will likely have parameters for one or more DAO's here...
         /// </summary>
-        public MainMenu(/***ICityDAO cityDAO, ICountryDAO countryDAO***/) : base("Main Menu")
+        public MainMenu(IParkDAO parkDAO /***ICityDAO cityDAO, ICountryDAO countryDAO***/) : base("Main Menu")
         {
-            //this.cityDAO = cityDAO;
+            this.parkDAO = parkDAO;
             //this.countryDAO = countryDAO;
         }
 
         protected override void SetMenuOptions()
         {
-            this.menuOptions.Add("1", "Add 2 integers");
+            this.menuOptions.Add("1", "List Parks");
             this.menuOptions.Add("2", "Menu option 2");
             this.menuOptions.Add("3", "Go to a sub-menu");
             this.menuOptions.Add("Q", "Quit program");
@@ -40,9 +41,9 @@ namespace Capstone.Views
             switch (choice)
             {
                 case "1": // Do whatever option 1 is
-                    int i1 = GetInteger("Enter the first integer: ");
-                    int i2 = GetInteger("Enter the second integer: ");
-                    Console.WriteLine($"{i1} + {i2} = {i1+i2}");
+
+                    ObjectListViews.DisplayParks(parkDAO.GetAllParks());
+                    
                     Pause("Press enter to continue");
                     return true;    // Keep running the main menu
                 case "2": // Do whatever option 2 is
