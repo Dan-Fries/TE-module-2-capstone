@@ -11,10 +11,24 @@ namespace Capstone.DAL
     public interface ICampgroundDAO
     {
         /// <summary>
-        /// Returns a list of all of the parks.
+        /// Returns a list of all of the campgrounds.
         /// </summary>
-        /// <returns>A list of all National Parks.</returns>
+        /// <returns>A list of all campgrounds.</returns>
         IList<Campground> GetAllCampgrounds();
+
+        /// <summary>
+        /// Returns a list of all of the campgrounds at a particular park id.
+        /// </summary>
+        /// <returns>A list of all campgrounds matching the parkId.</returns>
+        IList<Campground> GetCampgroundsByParkId(int parkId);
+
+
+
+
+
+
+
+
 
         ///// <summary>
         ///// Searches the system for an employee by first name or last name.

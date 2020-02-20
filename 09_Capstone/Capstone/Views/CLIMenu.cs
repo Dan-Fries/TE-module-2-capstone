@@ -139,6 +139,30 @@ namespace Capstone.Views
         }
 
         /// <summary>
+        /// This continually prompts the user until they enter a valid date.
+        /// </summary>
+        /// <param name="message">The string to prompt the user with</param>
+        /// <returns>A valid date entered by the user</returns>
+        static public DateTime GetDateTime(string message)
+        {
+            DateTime resultValue;
+            while (true)
+            {
+                Console.Write(message + " ");
+                string userInput = Console.ReadLine().Trim();
+                if (DateTime.TryParse(userInput, out resultValue))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("!!! Invalid input. Please enter a valid date using '/' or '-' or spaces to seperate.");
+                }
+            }
+            return resultValue;
+        }
+
+        /// <summary>
         /// This continually prompts the user until they enter a valid double.
         /// </summary>
         /// <param name="message">The string to prompt the user with</param>
@@ -249,7 +273,7 @@ namespace Capstone.Views
         /// <param name="message">Displays a message to the user and then waits for them to hit Return.</param>
         static public void Pause(string message)
         {
-            Console.Write(message + " Press Enter to continue.");
+            Console.Write(message + "Press Enter to continue...");
             Console.ReadLine();
         }
 

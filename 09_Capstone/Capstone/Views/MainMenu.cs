@@ -12,23 +12,26 @@ namespace Capstone.Views
         // DAOs - Interfaces to our data objects can be stored here...
         protected IParkDAO parkDAO;
         protected ICampgroundDAO campgroundDAO;
+        protected ISiteDAO siteDAO;
+        protected IReservationDAO reservationDAO;
         //protected ICountryDAO countryDAO;
 
         /// <summary>
         /// Constructor adds items to the top-level menu. YOu will likely have parameters for one or more DAO's here...
         /// </summary>
-        public MainMenu(IParkDAO parkDAO, ICampgroundDAO campgroundDAO /***ICityDAO cityDAO, ICountryDAO countryDAO***/) : base("Main Menu")
+        public MainMenu(IParkDAO parkDAO, ICampgroundDAO campgroundDAO, ISiteDAO siteDAO, IReservationDAO reservationDAO) : base("Main Menu")
         {
             this.parkDAO = parkDAO;
             this.campgroundDAO = campgroundDAO;
-            //this.countryDAO = countryDAO;
+            this.siteDAO = siteDAO;
+            this.reservationDAO = reservationDAO;
         }
 
         protected override void SetMenuOptions()
         {
-            this.menuOptions.Add("1", "List Parks");
-            this.menuOptions.Add("2", "List Campgrounds by Park Id");
-            this.menuOptions.Add("3", "Go to a sub-menu");
+            this.menuOptions.Add("1", "List National Parks");
+            this.menuOptions.Add("2", "List Campgrounds at a National Park");
+            this.menuOptions.Add("3", "Make a reservation");
             this.menuOptions.Add("Q", "Quit program");
         }
 
@@ -42,21 +45,19 @@ namespace Capstone.Views
         {
             switch (choice)
             {
-                case "1": // Do whatever option 1 is
-
+                case "1": // Display all parks with summary information
                     ObjectListViews.DisplayParks(parkDAO.GetAllParks());
-                    
-                    Pause("Press enter to continue");
-                    return true;    // Keep running the main menu
-                case "2": // Do whatever option 2 is
-
-                    ObjectListViews.DisplayCampgrounds(campgroundDAO.GetAllCampgrounds());
-
                     Pause("");
                     return true;    // Keep running the main menu
-                case "3": // Create and show the sub-menu
-                    SubMenu1 sm = new SubMenu1();
-                    sm.Run();
+                case "2": // Display all the campgrounds at a selected national park
+                    ObjectListViews.DisplayParksSingleLine(parkDAO.GetAllParks());
+                    int parkId = GetInteger("Please select a national park by Id to display the campgrounds at that park:");
+                    ObjectListViews.DisplayCampgrounds(campgroundDAO.GetCampgroundsByParkId(parkId));
+                    Pause("");
+                    return true;    // Keep running the main menu
+                case "3": // Create and show the reservation sub-menu
+                    ReservationMenu rm = new ReservationMenu(parkDAO, campgroundDAO, siteDAO, reservationDAO);
+                    rm.Run();
                     return true;    // Keep running the main menu
             }
             return true;
@@ -71,7 +72,7 @@ namespace Capstone.Views
         private void PrintHeader()
         {
             SetColor(ConsoleColor.Yellow);
-            Console.WriteLine(Figgle.FiggleFonts.Standard.Render("My Program"));
+            Console.WriteLine(Figgle.FiggleFonts.Standard.Render("National Parks"));
             ResetColor();
         }
     }
