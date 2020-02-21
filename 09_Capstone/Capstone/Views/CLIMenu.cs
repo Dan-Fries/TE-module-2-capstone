@@ -187,7 +187,24 @@ namespace Capstone.Views
             }
             return resultValue;
         }
-
+        static public DateTime GetDateTimeAfterDate(string message, DateTime startDate)
+        {
+            DateTime resultValue;
+            while (true)
+            {
+                Console.Write(message + " ");
+                string userInput = Console.ReadLine().Trim();
+                if (DateTime.TryParse(userInput, out resultValue) && resultValue > startDate)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("!!! Invalid input. Please enter a valid date that is after the arrival date");
+                }
+            }
+            return resultValue;
+        }
         /// <summary>
         /// This continually prompts the user until they enter a valid double.
         /// </summary>

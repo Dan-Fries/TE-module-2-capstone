@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Capstone\Capstone.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Setup.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

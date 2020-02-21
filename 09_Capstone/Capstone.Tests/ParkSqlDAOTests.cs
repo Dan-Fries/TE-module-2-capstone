@@ -72,7 +72,7 @@ namespace Capstone.Tests
 
             //Assert 
             Assert.AreEqual(2, parks.Count);
-            Assert.AreEqual("----", parks[i].Name);
+            Assert.AreEqual("Mount Rushmore", parks[i].Name);
         }
     }
 }

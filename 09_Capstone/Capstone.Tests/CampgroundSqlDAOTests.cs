@@ -17,7 +17,7 @@ namespace Capstone.Tests
 
         private string connectionString = "Server=.\\SqlExpress;Database=npcampground;Trusted_Connection=True;";
         private int newCampgroundId;
-
+        private int newParkId;
 
         [TestInitialize]
         public void SetupDatabase()
@@ -42,6 +42,8 @@ namespace Capstone.Tests
                 if (rdr.Read())
                 {
                     newCampgroundId = Convert.ToInt32(rdr["newCampgroundId"]);
+               
+                    newParkId = Convert.ToInt32(rdr["newParkId"]);
                 }
             }
         }
@@ -72,7 +74,31 @@ namespace Capstone.Tests
 
             //Assert 
             Assert.AreEqual(2, campgrounds.Count);
-            Assert.AreEqual("-------", campgrounds[i].Name);
+            Assert.AreEqual("Big Trees", campgrounds[i].Name);
         }
+
+    
+        [TestMethod]
+        public void TestGetAllCampgroundsByParkId()
+        {
+            //Arrange
+            CampgroundSqlDAO dao = new CampgroundSqlDAO(connectionString);
+
+            //Act
+            IList<Campground> campgrounds = dao.GetCampgroundsByParkId(newParkId);
+            int i = 0;
+            for (; i < campgrounds.Count; i++)
+            {
+                if (campgrounds[i].CampgroundId == newCampgroundId)
+                {
+                    break;
+                }
+            }
+
+            //Assert 
+            Assert.AreEqual(1, campgrounds.Count);
+            Assert.AreEqual("Big Trees", campgrounds[i].Name);
+        }
+
     }
 }

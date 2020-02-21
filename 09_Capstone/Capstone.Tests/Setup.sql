@@ -1,9 +1,15 @@
 ﻿-- Delete all of the data
 
-DELETE FROM park;
+ALTER TABLE campground
+DROP CONSTRAINT FK__campgroun__park___2F10007B
+
+ALTER TABLE site
+DROP CONSTRAINT FK__site__campground__300424B4
+
+DELETE FROM park
+DELETE FROM campground;
 DELETE FROM reservation;
 DELETE FROM site;
-DELETE FROM campground;
 
 -- Insert a fake park
 INSERT INTO park
@@ -27,7 +33,7 @@ DECLARE @newCampgroundId int = (SELECT @@IDENTITY);
 -- Insert a fake site
 INSERT INTO site (campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities)
 VALUES
-((SELECT campground_id FROM campground WHERE name = 'Rocky Road'),7, 8, 'true', 13, 'false'),
+((SELECT campground_id FROM campground WHERE name = 'Rocky Road'), 7, 8, 'true', 13, 'false'),
 ((SELECT campground_id FROM campground WHERE name = 'Big Trees'), 10, 4, 'false', 22, 'true');
 
 DECLARE @newSiteId int = (SELECT @@IDENTITY);

@@ -66,5 +66,21 @@ namespace Capstone.Models
 
             return validSelections;
         }
+
+        public static List<int> GetValidSiteId(IList<Site> sites)
+        {
+            List<int> validSelections = new List<int>();
+
+            // Explicitly add 0 to the list to allow the user to cancel a transaction
+            validSelections.Add(0);
+
+            // Iterate over the list and all all valid site numbers to the valid selections list
+            foreach (Site site in sites)
+            {
+                validSelections.Add(site.SiteId);
+            }
+
+            return validSelections;
+        }
     }
 }

@@ -17,6 +17,7 @@ namespace Capstone.Tests
 
         private string connectionString = "Server=.\\SqlExpress;Database=npcampground;Trusted_Connection=True;";
         private int newSiteId;
+        private int newCampgroundId;
 
 
         [TestInitialize]
@@ -39,9 +40,11 @@ namespace Capstone.Tests
 
                 SqlCommand cmd = new SqlCommand(setupSQL, conn);
                 SqlDataReader rdr = cmd.ExecuteReader();
-                if (rdr.Read())
+                while (rdr.Read())
                 {
                     newSiteId = Convert.ToInt32(rdr["newSiteId"]);
+                    newCampgroundId = Convert.ToInt32(rdr["newCampgroundId"]);
+
                 }
             }
         }
@@ -53,14 +56,15 @@ namespace Capstone.Tests
             transaction.Dispose();
         }
 
+
         [TestMethod]
-        public void TestGetAllSites()
+        public void TestGetAvailableSites()
         {
             //Arrange
             SiteSqlDAO dao = new SiteSqlDAO(connectionString);
 
             //Act
-            IList<Site> sites = dao.GetAllSites();
+            IList<Site> sites = dao.GetAvailableSites(newCampgroundId, Convert.ToDateTime("05/05/2020"), Convert.ToDateTime("05/19/2020"));
             int i = 0;
             for (; i < sites.Count; i++)
             {
@@ -71,8 +75,46 @@ namespace Capstone.Tests
             }
 
             //Assert 
-            Assert.AreEqual(2, sites.Count);
-            Assert.AreEqual("-----", sites[i].Name);
+            Assert.AreEqual(1, sites.Count);
+            Assert.AreEqual(4, sites[i].MaxOccupancy);
+
+        }
+
+        [TestMethod]
+        public void TestGetAvailableSitesAdvancedSearchNoMatches()
+        {
+            //Arrange
+            SiteSqlDAO dao = new SiteSqlDAO(connectionString);
+
+            //Act
+            IList<Site> sites = dao.GetAvailableSites(newCampgroundId, Convert.ToDateTime("01/01/2020"), Convert.ToDateTime("05/19/2020"), 4, false, 22, true);
+
+            //Assert 
+            Assert.AreEqual(0, sites.Count);
+          
+        }
+
+        [TestMethod]
+        public void TestGetAvailableSitesAdvancedSearchWithMatches()
+        {
+            //Arrange
+            SiteSqlDAO dao = new SiteSqlDAO(connectionString);
+
+            //Act
+            IList<Site> sites = dao.GetAvailableSites(newCampgroundId, Convert.ToDateTime("06/13/2020"), Convert.ToDateTime("06/19/2020"), 3, false, 0, true);
+            int i = 0;
+            for (; i < sites.Count; i++)
+            {
+                if (sites[i].SiteId == newSiteId)
+                {
+                    break;
+                }
+            }
+
+            //Assert 
+            Assert.AreEqual(1, sites.Count);
+            Assert.AreEqual("Big Trees", sites[i].Name);
+
         }
     }
 }

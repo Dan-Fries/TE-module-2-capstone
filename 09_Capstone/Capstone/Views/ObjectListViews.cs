@@ -72,9 +72,53 @@ namespace Capstone.Views
 
             for (int i = 0; i < sites.Count(); i++)
             {
-
+                Console.WriteLine();
                 Console.WriteLine($"#{sites[i].SiteNumber,-10}{sites[i].MaxOccupancy,-16}{FormatAccesibility(sites[i].Accessible),-16}{FormatRVLength(sites[i].MaxRVLength),-16}{FormatUtilities(sites[i].Utilities),-16}{price,-16:C}");
 
+            }
+        }
+
+        /// <summary>
+        /// Method to display campsites at all campgrounds for a chosen park
+        /// </summary>
+        /// <param name="sites"></param>
+        /// <param name="campgrounds"></param>
+        /// <param name="campgroundSelection"></param>
+        /// <param name="numDays"></param>
+        public static void DisplayCampSitesParkwide(IList<Site> sites, IList<Campground> campgrounds, int numDays)
+        {
+            string[] labels = { "Campground", "Site ID", "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost" };
+            Console.WriteLine();
+            Console.WriteLine($"{labels[0],-32}{labels[1],-10}{labels[2],-10}{labels[3],-10} {labels[4],-16} {labels[5],-16}{labels[6],-16}{labels[7],-16}");
+            decimal price = 0m;
+
+            foreach (Site site in sites)
+            {
+                string campgroundName = "";
+                decimal campgroundPrice = 0.0m;
+                foreach (Campground campground in campgrounds)
+                {
+                    if (site.CampgroundId == campground.CampgroundId)
+                    {
+                        campgroundName = campground.Name;
+                        campgroundPrice = campground.DailyFee;
+                    }
+                }
+                price = campgroundPrice * numDays;
+                Console.WriteLine();
+                Console.WriteLine($"{campgroundName, -32}{site.SiteId,-10}#{site.SiteNumber,-10}{site.MaxOccupancy,-10}{FormatAccesibility(site.Accessible),-16}{FormatRVLength(site.MaxRVLength),-16}{FormatUtilities(site.Utilities),-16}{price,-16:C}");
+            }
+        }
+
+        public static void DisplayReservationList(IList<Reservation> reservations)
+        {
+            string[] labels = { "Reservation ID", "Site ID", "Name", "Start Date", "End Date", "Date Created"};
+            Console.WriteLine();
+            Console.WriteLine($"{labels[0],-18}{labels[1],-12}{labels[2],-32}{labels[3],-14}{labels[4],-14}{labels[5],-14}");
+
+            foreach (Reservation reservation in reservations)
+            {
+                Console.WriteLine($"{reservation.ReservationId,-18}{reservation.SiteId,-12}{reservation.Name,-32}{reservation.StartDate, -14:d}{reservation.EndDate, -14:d}{reservation.BookingDate, -14:d}");
             }
         }
 

@@ -17,6 +17,8 @@ namespace Capstone.Tests
 
         private string connectionString = "Server=.\\SqlExpress;Database=npcampground;Trusted_Connection=True;";
         private int newReservationId;
+        private int newSiteId;
+        private int newCampgroundId;
 
 
         [TestInitialize]
@@ -42,6 +44,8 @@ namespace Capstone.Tests
                 if (rdr.Read())
                 {
                     newReservationId = Convert.ToInt32(rdr["newReservationId"]);
+                    newSiteId = Convert.ToInt32(rdr["newSiteId"]);
+                    newCampgroundId = Convert.ToInt32(rdr["newCampgroundId"]);
                 }
             }
         }
@@ -54,25 +58,62 @@ namespace Capstone.Tests
         }
 
         [TestMethod]
-        public void TestGetReservations()
+        public void TestMakeReservation()
         {
             //Arrange
             ReservationSqlDAO dao = new ReservationSqlDAO(connectionString);
 
             //Act
-            IList<Reservation> reservations = dao.GetAllReservations();
-            int i = 0;
-            for (; i < reservations.Count; i++)
-            {
-                if (reservations[i].ReservationId == newReservationId)
-                {
-                    break;
-                }
-            }
+            Reservation reservation = dao.MakeReservation(10, newCampgroundId, "Fries Island", Convert.ToDateTime("01/05/2020"), Convert.ToDateTime("03/05/2020"));
+         
 
             //Assert 
-            Assert.AreEqual(2, reservations.Count);
-            Assert.AreEqual("-----", reservations[i].Name);
+           
+            Assert.AreEqual("Fries Island", reservation.Name);
+            Assert.AreEqual(Convert.ToDateTime("01/05/2020"), reservation.StartDate);
         }
+
+
+        [TestMethod]
+        public void TestMakeReservationBySiteId()
+        {
+            //Arrange
+            ReservationSqlDAO dao = new ReservationSqlDAO(connectionString);
+
+            //Act
+            Reservation reservation = dao.MakeReservationBySiteId(newSiteId, "Williams View", Convert.ToDateTime("01/24/1995"), Convert.ToDateTime("02/01/1995"));
+
+
+            //Assert 
+            Assert.AreEqual(Convert.ToDateTime("02/01/1995"), reservation.EndDate);
+            Assert.AreEqual("Williams View", reservation.Name);
+        }
+
+
+        [TestMethod]
+        public void TestViewAllUpcomingReservations()
+        {
+            //Arrange
+            ReservationSqlDAO dao = new ReservationSqlDAO(connectionString);
+            Reservation reservation = dao.MakeReservation(10, newCampgroundId, "Fries Island", Convert.ToDateTime("02/29/2020"), Convert.ToDateTime("03/01/2020"));
+
+            //Act
+            IList<Reservation> reservations = dao.ViewAllUpcomingReservations(DateTime.Now, Convert.ToDateTime("03/01/2020"));
+            //int i = 0;
+            //for (; i < reservations.Count; i++)
+            //{
+            //    if (reservations[i].ReservationId == newReservationId)
+            //    {
+            //        break;
+            //    }
+            //}
+
+            //Assert 
+         
+            Assert.AreEqual(Convert.ToDateTime("03/01/2020"), reservations[reservations.Count -1].EndDate);
+        }
+
+
+
     }
 }

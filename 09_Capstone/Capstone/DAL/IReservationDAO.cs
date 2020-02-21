@@ -11,6 +11,10 @@ namespace Capstone.DAL
 
         //IList<Reservation> GetAllReservationsByCampgroundId(int campgroundId);
 
-        Reservation MakeReservation(int siteId, int campgroundId, string name, DateTime startDate, DateTime endDate);
+        Reservation MakeReservation(int siteNumber, int campgroundId, string name, DateTime startDate, DateTime endDate);
+
+        Reservation MakeReservationBySiteId(int siteId, string name, DateTime startDate, DateTime endDate);
+
+        IList<Reservation> ViewAllUpcomingReservations(DateTime startDate, DateTime endDate);
     }
 }

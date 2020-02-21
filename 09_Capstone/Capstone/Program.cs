@@ -30,9 +30,6 @@ namespace Capstone
 
             MainMenu mainMenu = new MainMenu(parkDAO, campgroundDAO, siteDAO, reservationDAO);  // You'll probably be adding daos to the constructor
 
-            // Set the Original Console color so the constructor for CLIMenu picks up the desired color
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
             // Run the menu.
             mainMenu.Run();
         }

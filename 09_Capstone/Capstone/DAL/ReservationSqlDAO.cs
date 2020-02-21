@@ -124,6 +124,79 @@ Select @@identity;";
             return reservation;
         }
 
+        public Reservation MakeReservationBySiteId(int siteId, string name, DateTime startDate, DateTime endDate)
+        {
+            Reservation reservation = null;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+
+                    conn.Open();
+                    string sql =
+@"INSERT INTO reservation (site_id, name, from_date, to_date, create_date)
+Values (@siteId, @name, @fromDate, @toDate, @createDate)
+Select @@identity;";
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@siteId", siteId);
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@fromDate", startDate);
+                    cmd.Parameters.AddWithValue("@toDate", endDate);
+                    cmd.Parameters.AddWithValue("@createDate", DateTime.Now);
+
+                    int newReservationId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    // Run a second query to return a row matching the reservation id in order to create a reservation object to return
+                    sql = "SELECT * FROM reservation WHERE reservation_id = @newReservationId";
+                    cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@newReservationId", newReservationId);
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.Read())
+                    {
+                        reservation = RowToObject(rdr);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return reservation;
+        }
+
+        public IList<Reservation> ViewAllUpcomingReservations(DateTime startDate, DateTime endDate)
+        {
+            IList<Reservation> reservations = new List<Reservation>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+
+                    conn.Open();
+                    string sql =
+@"SELECT * FROM reservation WHERE from_date BETWEEN @startDate AND @endDate";
+
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@startDate", startDate);
+                    cmd.Parameters.AddWithValue("@endDate", endDate);
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        reservations.Add(RowToObject(rdr));
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return reservations;
+        }
+
         /// <summary>
         /// Helper Method to convert SQL row data to a Reservation object
         /// </summary>
