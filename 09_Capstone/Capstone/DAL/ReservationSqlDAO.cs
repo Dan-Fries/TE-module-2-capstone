@@ -18,80 +18,80 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        public IList<Reservation> GetAllReservations()
-        {
-            List<Reservation> reservations = new List<Reservation>();
+        //public IList<Reservation> GetAllReservations()
+        //{
+        //    List<Reservation> reservations = new List<Reservation>();
 
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        {
+        //            conn.Open();
+
+        //            string sql = "SELECT * FROM reservation";
+
+        //            SqlCommand cmd = new SqlCommand(sql, conn);
+        //            SqlDataReader rdr = cmd.ExecuteReader();
+
+        //            while (rdr.Read())
+        //            {
+        //                reservations.Add(RowToObject(rdr));
+        //            }
+        //        }
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //    }
+
+        //    return reservations;
+        //}
+
+//        public IList<Reservation> GetAllReservationsByCampgroundId(int campgroundId)
+//        {
+//            List<Reservation> reservations = new List<Reservation>();
+
+//            try
+//            {
+//                using (SqlConnection conn = new SqlConnection(connectionString))
+//                {
+//                    conn.Open();
+
+//                    string sql =
+//@"SELECT * FROM reservation r
+//JOIN site s ON r.site_id = s.site_id
+//WHERE s.campground_id = @campgroundId";
+
+//                    SqlCommand cmd = new SqlCommand(sql, conn);
+//                    cmd.Parameters.AddWithValue("@campgroundId", campgroundId);
+
+//                    SqlDataReader rdr = cmd.ExecuteReader();
+
+//                    while (rdr.Read())
+//                    {
+//                        reservations.Add(RowToObject(rdr));
+//                    }
+//                }
+//            }
+//            catch (SqlException ex)
+//            {
+//                Console.WriteLine(ex.Message);
+//            }
+
+//            return reservations;
+//        }
+
+        public Reservation MakeReservation(int siteNumber, int campgroundId, string name, DateTime startDate, DateTime endDate)
+        {
+            Reservation reservation = null;
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
+
                     conn.Open();
-
-                    string sql = "SELECT * FROM reservation";
-
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    SqlDataReader rdr = cmd.ExecuteReader();
-
-                    while (rdr.Read())
-                    {
-                        reservations.Add(RowToObject(rdr));
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return reservations;
-        }
-
-        public IList<Reservation> GetAllReservationsByCampgroundId(int campgroundId)
-        {
-            List<Reservation> reservations = new List<Reservation>();
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-
                     string sql =
-@"SELECT * FROM reservation r
-JOIN site s ON r.site_id = s.site_id
-WHERE s.campground_id = @campgroundId";
-
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@campgroundId", campgroundId);
-
-                    SqlDataReader rdr = cmd.ExecuteReader();
-
-                    while (rdr.Read())
-                    {
-                        reservations.Add(RowToObject(rdr));
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return reservations;
-        }
-
-        public int MakeReservation(int siteNumber, int campgroundId, string name, DateTime startDate, DateTime endDate)
-        {
-            int newReservationId = 0;
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-
-                    conn.Open();
-                    string sql =
-    $@"INSERT INTO reservation (site_id, name, from_date, to_date, create_date)
+@"INSERT INTO reservation (site_id, name, from_date, to_date, create_date)
 Values ((SELECT site_id FROM site WHERE site_number = @siteNumber AND campground_id = @campgroundId), @name, @fromDate, @toDate, @createDate)
 Select @@identity;";
 
@@ -103,37 +103,44 @@ Select @@identity;";
                     cmd.Parameters.AddWithValue("@toDate", endDate);
                     cmd.Parameters.AddWithValue("@createDate", DateTime.Now);
 
-                    newReservationId = Convert.ToInt32(cmd.ExecuteScalar());
+                    int newReservationId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    // Run a second query to return a row matching the reservation id in order to create a reservation object to return
+                    sql = "SELECT * FROM reservation WHERE reservation_id = @newReservationId";
+                    cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@newReservationId", newReservationId);
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.Read())
+                    {
+                        reservation = RowToObject(rdr);
+                    }
                 }
-
             }
-
             catch (SqlException ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            return newReservationId;
+            return reservation;
         }
 
+        /// <summary>
+        /// Helper Method to convert SQL row data to a Reservation object
+        /// </summary>
+        /// <param name="rdr"></param>
+        /// <returns></returns>
         private static Reservation RowToObject(SqlDataReader rdr)
         {
             Reservation reservation = new Reservation();
 
             reservation.ReservationId = Convert.ToInt32(rdr["reservation_id"]);
-
-
             reservation.SiteId = Convert.ToInt32(rdr["site_id"]);
-
 
             reservation.Name = Convert.ToString(rdr["name"]);
 
             reservation.StartDate = Convert.ToDateTime(rdr["from_date"]);
-
             reservation.EndDate = Convert.ToDateTime(rdr["to_date"]);
-
-
             reservation.BookingDate = Convert.ToDateTime(rdr["create_date"]);
-
 
             return reservation;
         }

@@ -10,7 +10,7 @@ namespace Capstone.Views
     public static class ObjectListViews
     {
 
-        public static void DisplayParks(IList<Park> parks)
+        public static void DisplayParksDetailedView(IList<Park> parks)
         {
             string[] labels = { "Location:", "Established:", "Area:", "Annual Visitors:" };
             foreach (Park park in parks)
@@ -66,7 +66,7 @@ namespace Capstone.Views
             }
 
             if (numDays != 0)
-            { 
+            {
                 price *= numDays;
             }
 
@@ -78,46 +78,10 @@ namespace Capstone.Views
             }
         }
 
-
-        //public static void DisplayAvailableSites(IList<Reservation> reservations, IList<Site> allsites, DateTime startDate, DateTime endDate, IList<Campground> campgrounds, int campgroundSelection)
-        //{
-        //    string[] labels = { "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost" };
-        //    Console.WriteLine();
-        //    Console.WriteLine($"{labels[0],-10}{labels[1],-16}{labels[2],-16}{labels[3],-16} {labels[4],-16} {labels[5],-16}");
-        //    decimal price = 0m;
-
-
-        //    List<int> conflictIds = new List<int>();
-        //    foreach (Reservation reservation in reservations)
-        //    {
-        //        // If the reservation date is in range of another reservation
-        //        if ((startDate >= reservation.StartDate && startDate <= reservation.EndDate) || (endDate >= reservation.StartDate && endDate <= reservation.EndDate))
-        //        {
-        //            conflictIds.Add(reservation.SiteId);
-        //        }
-        //    }
-
-        //    foreach (Campground campground in campgrounds)
-        //    {
-        //        if (campground.CampgroundId == campgroundSelection)
-        //        {
-        //            price = campground.DailyFee;
-        //            break;
-        //        }
-        //    }
-
-
-        //    foreach (Site site in allsites)
-        //    {
-        //        if (!conflictIds.Contains(site.SiteId))
-        //        {
-        //            //Console.WriteLine(site.SiteId);
-        //            Console.WriteLine($"{site.SiteNumber,-10}{site.MaxOccupancy,-16}{FormatAccesibility(site.Accessible),-16}{FormatRVLength(site.MaxRVLength),-16}{FormatUtilities(site.Utilities),-16}{price,-16:C}");
-
-        //        }
-        //    }
-        //}
-
+        public static void DisplaySingleReservation(Reservation reservation)
+        {
+            Console.WriteLine($"Reservation #{reservation.ReservationId} was booked on {reservation.BookingDate:d} for {reservation.StartDate:d} to {reservation.EndDate:d}.");
+        }
 
         // Method to wrap the words of a paragraph according to console screen width, code found at:
         // https://social.msdn.microsoft.com/Forums/en-US/1ec953bc-f776-466c-a2f7-f29a2a3440c2/make-consolewriteline-wrap-words-instead-of-letters-with-methods
@@ -184,15 +148,5 @@ namespace Capstone.Views
 
             return boolToWord[utility];
         }
-
-
-
     }
 }
-
-//string[] headings = { "Number", "Task", "Due Date", "Completed" };
-//Console.WriteLine($"{headings[0],6} {headings[1],-30} {headings[2],-15} {headings[3],-10}");
-//            foreach (Task task in list)
-//            {
-//                Console.WriteLine($"{task.Id,6} {task.TaskName,-30} {task.DueDate,-15:d} {task.Completed,-10}");
-//            }

@@ -30,8 +30,8 @@ namespace Capstone.Views
 
         protected override void SetMenuOptions()
         {
-            this.menuOptions.Add("1", "Book a campsite");
-            this.menuOptions.Add("2", "Book a campsite with advanced search options");
+            this.menuOptions.Add("1", "Search for and book a campsite");
+            this.menuOptions.Add("2", "Future Bonus Functionality");
             this.menuOptions.Add("B", "Back to Main Menu");
             this.quitKey = "B";
         }
@@ -46,16 +46,11 @@ namespace Capstone.Views
         {
             switch (choice)
             {
-                case "1": // Do whatever option 1 is
-                    MakeReservation(false);
+                case "1": // Allow the user to search for and book a campsite including advanced search options by calling the MakeReservation method
+                    ReservationSearch();
                     Pause("");
                     return true;
                 case "2": // Do whatever option 2 is
-                    //int campgroundSelection = GetInteger("Choose a campground: ");
-                    //ObjectListViews.DisplayCampSites(siteDAO.GetSitesByCampgroundId(campgroundSelection), campgroundsByID, campgroundSelection);
-                    MakeReservation(true);
-
-
                     WriteError("Not yet implemented");
                     Pause("");
                     return true;
@@ -68,31 +63,36 @@ namespace Capstone.Views
             PrintHeader();
         }
 
-        protected override void AfterDisplayMenu()
-        {
-            base.AfterDisplayMenu();
-            SetColor(ConsoleColor.Cyan);
-            Console.WriteLine("Display some data here, AFTER the sub-menu is shown....");
-            ResetColor();
-        }
+        //protected override void AfterDisplayMenu()
+        //{
+        //    base.AfterDisplayMenu();
+        //    SetColor(ConsoleColor.Cyan);
+        //    Console.WriteLine("Display some data here, AFTER the sub-menu is shown....");
+        //    ResetColor();
+        //}
 
         private void PrintHeader()
         {
-            SetColor(ConsoleColor.Magenta);
+            SetColor(ConsoleColor.DarkRed);
             Console.WriteLine(Figgle.FiggleFonts.Standard.Render("Reservations"));
             ResetColor();
         }
 
-        private void MakeReservation(bool isAdvancedSearch)
+        private void ReservationSearch()
         {
             // Display a list of all parks for the user to choose from
-            ObjectListViews.DisplayParksSingleLine(parkDAO.GetAllParks());
+            IList<Park> parks = parkDAO.GetAllParks();
+            ObjectListViews.DisplayParksSingleLine(parks);
 
-            // Prompt the user to select a park and pass the verified selection to Display campgrounds at that park
-            ObjectListViews.DisplayCampgrounds(campgroundDAO.GetCampgroundsByParkId(GetInteger("Please choose a park to view available campgrounds: ")));
-            
-            // Prompt user to choose a campground and store this value for later use
-            int campgroundId = GetInteger("Choose a campground (Select 0 to cancel): ");
+            // Prompt the user to select a valid park 
+            int parkId = GetValidInteger("Please choose a park to view available campgrounds: ", Validators.GetValidParkIds(parks));
+
+            // Get and display a list of campgrounds at the selected park
+            IList<Campground> campgrounds = campgroundDAO.GetCampgroundsByParkId(parkId);
+            ObjectListViews.DisplayCampgrounds(campgrounds);
+
+            // Prompt user to choose a valid campground if the user selects 0 cancel the transaction and return to the reservation menu
+            int campgroundId = GetValidInteger("Choose a campground (Select 0 to cancel): ", Validators.GetValidCampgroundIds(campgrounds));
             if (campgroundId == 0) return;
 
             // Prompt the user to enter an arrival and departure date and store them and then calculate the total number of days of the stay
@@ -100,40 +100,61 @@ namespace Capstone.Views
             DateTime endDate = GetDateTime("Please enter a departure date: ");
             int numDays = (int)((endDate - startDate).TotalDays);
 
-            // Display a list of available campsites that meet the users selected options
+            // Ask the user if they would like to perform an advanced search
+            bool isAdvancedSearch = GetBool("Would you like to perform an advanced search (y/n): ");
+
+            // Create a list to hold the results of the search
             IList<Site> sites = new List<Site>();
+
+            // If the user selected to perform an advanced search get additional parameters, then build a list of sites matching search criteria
             if (isAdvancedSearch)
             {
                 int maxOccupancyRequired = GetInteger("What is the max occupancy required: ");
                 bool isAccessible = GetBool("Do you need a weelchair accessible site (y/n): ");
                 int rvSizeRequired = GetInteger("What size RV parking is required (Enter 0 for no RV): ");
                 bool isHookupRequired = GetBool("Do you need utility hookups (y/n): ");
-                sites = siteDAO.GetAvailableSitesAdvanced(campgroundId, startDate, endDate, maxOccupancyRequired, isAccessible, rvSizeRequired, isHookupRequired);
+                sites = siteDAO.GetAvailableSites(campgroundId, startDate, endDate, maxOccupancyRequired, isAccessible, rvSizeRequired, isHookupRequired);
             }
             else
             {
                 sites = siteDAO.GetAvailableSites(campgroundId, startDate, endDate);
             }
 
-            ObjectListViews.DisplayCampSites(sites, campgroundDAO.GetAllCampgrounds(), campgroundId, numDays);
-            
-            // Prompt the user to choose a site to reserve
-            int siteNumber = GetInteger("Select a site that you want to reserve (enter 0 to cancel):");
+            // Check if the search returned any results and print a message indicating no results or a list showing matching results
+            if (sites.Count == 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Sorry but no matching results were found for your search, returning to reservation menu.");
+                return;
+            }
+            else
+            {
+                ObjectListViews.DisplayCampSites(sites, campgroundDAO.GetAllCampgrounds(), campgroundId, numDays);
+            }
+
+            // Prompt the user to choose a valid site to reserve allow the user to select 0 to cancel the reservation
+            int siteNumber = GetValidInteger("Select a site that you want to reserve (enter 0 to cancel):", Validators.GetValidSiteNumber(sites));
             if (siteNumber == 0) return;
 
             // Prompt the user for a name to book the reservation under
             string name = GetString("Enter the name for the reservation: ");
 
-            // Make the reservation and return to the user a confirmation number
-            int reservationId = reservationDAO.MakeReservation(siteNumber, campgroundId, name, startDate, endDate);
-            if (reservationId == 0)
+            // Make the reservation and return to the user a confirmation number or error message if the booking was unsuccesful
+            Reservation newReservation = reservationDAO.MakeReservation(siteNumber, campgroundId, name, startDate, endDate);
+            if (newReservation == null)
             {
-                Console.WriteLine("Sorry but you did not enter a valid campsite");
+                Console.WriteLine();
+                Console.WriteLine("Sorry but there was an error with your reservation, returning to the reservation menu.");
+                Console.WriteLine();
             }
             else
             {
-                Console.WriteLine($"The reservation has been made and the confirmation id is {reservationId}");
+                Console.WriteLine();
+                Console.WriteLine($"The reservation has been made and the confirmation id is {newReservation.ReservationId}.");
+                ObjectListViews.DisplaySingleReservation(newReservation);
+                Console.WriteLine();
             }
+
             return;
         }
 

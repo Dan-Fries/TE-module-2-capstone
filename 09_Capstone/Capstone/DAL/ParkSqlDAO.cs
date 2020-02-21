@@ -24,8 +24,6 @@ namespace Capstone.DAL
         /// <returns>A list of all employees.</returns>
         public IList<Park> GetAllParks()
         {
-            // throw new NotImplementedException();
-
             List<Park> parks = new List<Park>();
 
             try
@@ -53,85 +51,11 @@ namespace Capstone.DAL
             return parks;
         }
 
-
-        ///// <summary>
-        ///// Searches the system for an employee by first name or last name.
-        ///// </summary>
-        ///// <remarks>The search performed is a wildcard search.</remarks>
-        ///// <param name="firstname"></param>
-        ///// <param name="lastname"></param>
-        ///// <returns>A list of employees that match the search.</returns>
-        //public IList<Employee> Search(string firstname, string lastname)
-        //{
-        //    List<Employee> employees = new List<Employee>();
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            string sql = "SELECT * FROM employee WHERE last_name LIKE @lastname AND first_name LIKE @firstname";
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            cmd.Parameters.AddWithValue("@lastname", "%" + lastname + "%");
-        //            cmd.Parameters.AddWithValue("@firstname", "%" + firstname + "%");
-
-        //            SqlDataReader rdr = cmd.ExecuteReader();
-
-        //            while (rdr.Read())
-        //            {
-        //                employees.Add(RowToObject(rdr));
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-
-        //    return employees;
-        //}
-
-        ///// <summary>
-        ///// Gets a list of employees who are not assigned to any active projects.
-        ///// </summary>
-        ///// <returns></returns>
-        //public IList<Employee> GetEmployeesWithoutProjects()
-        //{
-        //    List<Employee> employees = new List<Employee>();
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            string sql = @"SELECT * from employee
-        //                    left outer join project_employee
-        //                        ON employee.employee_id = project_employee.employee_id
-        //                       WHERE project_employee.project_id IS NULL";
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            //cmd.Parameters.AddWithValue("@lastname", lastname);
-        //            //cmd.Parameters.AddWithValue("@firstname", firstname);
-
-        //            SqlDataReader rdr = cmd.ExecuteReader();
-
-        //            while (rdr.Read())
-        //            {
-        //                employees.Add(RowToObject(rdr));
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-
-        //    return employees;
-
-        //}
+        /// <summary>
+        /// Helper Method to convert SQL row data to a Park object
+        /// </summary>
+        /// <param name="rdr"></param>
+        /// <returns></returns>
         private static Park RowToObject(SqlDataReader rdr)
         {
             Park park = new Park

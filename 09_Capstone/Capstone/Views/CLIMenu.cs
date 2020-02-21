@@ -25,7 +25,7 @@ namespace Capstone.Views
         /// </summary>
         protected string quitKey = "Q";
 
-        static private ConsoleColor originalForegroundColor = Console.ForegroundColor;
+        static private ConsoleColor originalForegroundColor = ConsoleColor.Yellow; //Console.ForegroundColor;
         static private ConsoleColor originalBackgroundColor = Console.BackgroundColor;
 
         /// <summary>
@@ -133,6 +133,32 @@ namespace Capstone.Views
                 else
                 {
                     Console.WriteLine("!!! Invalid input. Please enter a valid whole number.");
+                }
+            }
+            return resultValue;
+        }
+
+        /// <summary>
+        /// Continually prompts the user until the enter a valid integer that is contained in the list of valid selections
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="validSelections"></param>
+        /// <returns></returns>
+        static public int GetValidInteger(string message, List<int> validSelections)
+        {
+            int resultValue = 0;
+            while (true)
+            {
+                Console.Write(message + " ");
+                string userInput = Console.ReadLine().Trim();
+                if (int.TryParse(userInput, out resultValue) && validSelections.Contains(resultValue))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Invalid input. Please enter a valid whole number that corresponds with a selection.");
                 }
             }
             return resultValue;

@@ -12,20 +12,18 @@ namespace Capstone.DAL
     {
         private string connectionString;
 
-        // Single Parameter Constructor
+        // Single Parameter Constructor requires a connection string
         public CampgroundSqlDAO(string dbConnectionString)
         {
             connectionString = dbConnectionString;
         }
 
         /// <summary>
-        /// Returns a list of all of the employees.
+        /// Returns a list of all campgrounds.
         /// </summary>
-        /// <returns>A list of all employees.</returns>
+        /// <returns>A list of all campgrounds.</returns>
         public IList<Campground> GetAllCampgrounds()
         {
-            // throw new NotImplementedException();
-
             List<Campground> campgrounds = new List<Campground>();
 
             try
@@ -53,10 +51,13 @@ namespace Capstone.DAL
             return campgrounds;
         }
 
+        /// <summary>
+        /// Returns a list of all campgrounds for a supplied parkId
+        /// </summary>
+        /// <param name="parkId"></param>
+        /// <returns>A list of matching campgrounds.</returns>
         public IList<Campground> GetCampgroundsByParkId(int parkId)
         {
-            // throw new NotImplementedException();
-
             List<Campground> campgrounds = new List<Campground>();
 
             try
@@ -86,85 +87,11 @@ namespace Capstone.DAL
             return campgrounds;
         }
 
-
-        ///// <summary>
-        ///// Searches the system for an employee by first name or last name.
-        ///// </summary>
-        ///// <remarks>The search performed is a wildcard search.</remarks>
-        ///// <param name="firstname"></param>
-        ///// <param name="lastname"></param>
-        ///// <returns>A list of employees that match the search.</returns>
-        //public IList<Employee> Search(string firstname, string lastname)
-        //{
-        //    List<Employee> employees = new List<Employee>();
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            string sql = "SELECT * FROM employee WHERE last_name LIKE @lastname AND first_name LIKE @firstname";
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            cmd.Parameters.AddWithValue("@lastname", "%" + lastname + "%");
-        //            cmd.Parameters.AddWithValue("@firstname", "%" + firstname + "%");
-
-        //            SqlDataReader rdr = cmd.ExecuteReader();
-
-        //            while (rdr.Read())
-        //            {
-        //                employees.Add(RowToObject(rdr));
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-
-        //    return employees;
-        //}
-
-        ///// <summary>
-        ///// Gets a list of employees who are not assigned to any active projects.
-        ///// </summary>
-        ///// <returns></returns>
-        //public IList<Employee> GetEmployeesWithoutProjects()
-        //{
-        //    List<Employee> employees = new List<Employee>();
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            string sql = @"SELECT * from employee
-        //                    left outer join project_employee
-        //                        ON employee.employee_id = project_employee.employee_id
-        //                       WHERE project_employee.project_id IS NULL";
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            //cmd.Parameters.AddWithValue("@lastname", lastname);
-        //            //cmd.Parameters.AddWithValue("@firstname", firstname);
-
-        //            SqlDataReader rdr = cmd.ExecuteReader();
-
-        //            while (rdr.Read())
-        //            {
-        //                employees.Add(RowToObject(rdr));
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-
-        //    return employees;
-
-        //}
+        /// <summary>
+        /// Helper Method to convert SQL row data to a Campground object
+        /// </summary>
+        /// <param name="rdr"></param>
+        /// <returns></returns>
         private static Campground RowToObject(SqlDataReader rdr)
         {
             return new Campground
