@@ -63,7 +63,7 @@ AND (@endMonth BETWEEN c.open_from_mm AND c.open_to_mm) ";
                     }
                     if (isHookupRequired.HasValue && (bool)isHookupRequired)
                     {
-                        sql += " AND s.utility = 1";
+                        sql += " AND s.utilities = 1";
                     }
 
                     SqlCommand cmd = new SqlCommand(sql, conn);

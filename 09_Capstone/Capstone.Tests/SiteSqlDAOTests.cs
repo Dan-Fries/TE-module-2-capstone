@@ -113,7 +113,7 @@ namespace Capstone.Tests
 
             //Assert 
             Assert.AreEqual(1, sites.Count);
-            Assert.AreEqual("Big Trees", sites[i].Name);
+            Assert.AreEqual(10, sites[i].SiteNumber);
 
         }
     }
