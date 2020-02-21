@@ -9,7 +9,10 @@ namespace Capstone.Views
 {
     public static class ObjectListViews
     {
-
+        /// <summary>
+        /// Method to display a detailed view of all national parks
+        /// </summary>
+        /// <param name="parks"></param>
         public static void DisplayParksDetailedView(IList<Park> parks)
         {
             string[] labels = { "Location:", "Established:", "Area:", "Annual Visitors:" };
@@ -27,6 +30,10 @@ namespace Capstone.Views
             }
         }
 
+        /// <summary>
+        /// Method to display information about a national park on a single line
+        /// </summary>
+        /// <param name="parks"></param>
         public static void DisplayParksSingleLine(IList<Park> parks)
         {
             Console.WriteLine();
@@ -36,6 +43,10 @@ namespace Capstone.Views
             }
         }
 
+        /// <summary>
+        /// Method to display campgrounds from a provided list of campgrounds
+        /// </summary>
+        /// <param name="campgrounds"></param>
         public static void DisplayCampgrounds(IList<Campground> campgrounds)
         {
             string[] labels = { "Name", "Open", "Close", "Daily Fee" };
@@ -49,6 +60,13 @@ namespace Capstone.Views
             }
         }
 
+        /// <summary>
+        /// Method to display a list of sites from a given list of camp sites also calculate total price
+        /// </summary>
+        /// <param name="sites"></param>
+        /// <param name="campgrounds"></param>
+        /// <param name="campgroundSelection"></param>
+        /// <param name="numDays"></param>
         public static void DisplayCampSites(IList<Site> sites, IList<Campground> campgrounds, int campgroundSelection, int numDays)
         {
             string[] labels = { "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost" };
@@ -56,6 +74,8 @@ namespace Capstone.Views
             Console.WriteLine($"{labels[0],-10}{labels[1],-16}{labels[2],-16}{labels[3],-16} {labels[4],-16} {labels[5],-16}");
             decimal price = 0m;
 
+            // Iterate over the list of all campgrounds and find a campground that matches the selected campground
+            // Use the daily fee property to calculate the total fee for the stay
             foreach (Campground campground in campgrounds)
             {
                 if (campground.CampgroundId == campgroundSelection)
@@ -92,6 +112,7 @@ namespace Capstone.Views
             Console.WriteLine($"{labels[0],-32}{labels[1],-10}{labels[2],-10}{labels[3],-10} {labels[4],-16} {labels[5],-16}{labels[6],-16}{labels[7],-16}");
             decimal price = 0m;
 
+            // Iterate over the list of sites and determain campground name and price for proper display
             foreach (Site site in sites)
             {
                 string campgroundName = "";
@@ -104,12 +125,20 @@ namespace Capstone.Views
                         campgroundPrice = campground.DailyFee;
                     }
                 }
+
+                // Calculate the price for the stay
                 price = campgroundPrice * numDays;
+
+                // Display results
                 Console.WriteLine();
                 Console.WriteLine($"{campgroundName, -32}{site.SiteId,-10}#{site.SiteNumber,-10}{site.MaxOccupancy,-10}{FormatAccesibility(site.Accessible),-16}{FormatRVLength(site.MaxRVLength),-16}{FormatUtilities(site.Utilities),-16}{price,-16:C}");
             }
         }
 
+        /// <summary>
+        /// Display a list of reservations from the provided reservation list
+        /// </summary>
+        /// <param name="reservations"></param>
         public static void DisplayReservationList(IList<Reservation> reservations)
         {
             string[] labels = { "Reservation ID", "Site ID", "Name", "Start Date", "End Date", "Date Created"};
@@ -122,6 +151,10 @@ namespace Capstone.Views
             }
         }
 
+        /// <summary>
+        /// Display a single reservation confirmation 
+        /// </summary>
+        /// <param name="reservation"></param>
         public static void DisplaySingleReservation(Reservation reservation)
         {
             Console.WriteLine($"Reservation #{reservation.ReservationId} was booked on {reservation.BookingDate:d} for {reservation.StartDate:d} to {reservation.EndDate:d}.");
@@ -141,6 +174,11 @@ namespace Capstone.Views
             }
         }
 
+        /// <summary>
+        /// Helper method to convert an integer month into a string value
+        /// </summary>
+        /// <param name="month"></param>
+        /// <returns>A string for the corresponding month</returns>
         private static string intToMonth(int month)
         {
             Dictionary<int, string> numberToMonth = new Dictionary<int, string>()
@@ -162,6 +200,12 @@ namespace Capstone.Views
 
             return numberToMonth[month];
         }
+
+        /// <summary>
+        /// Helper method to format the accessibilty property according to design specifications
+        /// </summary>
+        /// <param name="accessibility"></param>
+        /// <returns>A string value corresponding to choice</returns>
         private static string FormatAccesibility(bool accessibility)
         {
             Dictionary<bool, string> boolToWord = new Dictionary<bool, string>()
@@ -173,6 +217,11 @@ namespace Capstone.Views
             return boolToWord[accessibility];
         }
 
+        /// <summary>
+        /// Helper method to format the rv length property according to design specifications
+        /// </summary>
+        /// <param name="rvLength"></param>
+        /// <returns>A string value corresponding to choice</returns>
         private static string FormatRVLength(int rvLength)
         {
             if (rvLength == 0)
@@ -182,6 +231,11 @@ namespace Capstone.Views
             return $"{rvLength}";
         }
 
+        /// <summary>
+        /// Helper method to format the utilities property according to design specifications
+        /// </summary>
+        /// <param name="utility"></param>
+        /// <returns>A string value corresponding to choice</returns>
         private static string FormatUtilities(bool utility)
         {
             Dictionary<bool, string> boolToWord = new Dictionary<bool, string>()

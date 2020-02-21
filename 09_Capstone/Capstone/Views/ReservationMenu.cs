@@ -5,12 +5,10 @@ using System.Collections.Generic;
 
 namespace Capstone.Views
 {
-    /// <summary>
-    /// The top-level menu in our Market Application
-    /// </summary>
+
     public class ReservationMenu : CLIMenu
     {
-        // Store any private variables, including DAOs here....
+        // DAOs required for functionality
         protected IParkDAO parkDAO;
         protected ICampgroundDAO campgroundDAO;
         protected ISiteDAO siteDAO;
@@ -51,11 +49,11 @@ namespace Capstone.Views
                     ReservationSearch();
                     Pause("");
                     return true;
-                case "2": // Do whatever option 2 is
+                case "2": // Allow the user to search for a reservation across the entire park
                     ReservationSearchByPark();
                     Pause("");
                     return true;
-                case "3":
+                case "3": // Allow the user to view all upcoming reservations from the current date to a chosen end date
                     DateTime endDate = GetDateTime("Enter a date to see all reservations from now until that date: ");
                     IList<Reservation> reservations = reservationDAO.ViewAllUpcomingReservations(DateTime.Now, endDate);
                     ObjectListViews.DisplayReservationList(reservations);
@@ -70,14 +68,6 @@ namespace Capstone.Views
             PrintHeader();
         }
 
-        //protected override void AfterDisplayMenu()
-        //{
-        //    base.AfterDisplayMenu();
-        //    SetColor(ConsoleColor.Cyan);
-        //    Console.WriteLine("Display some data here, AFTER the sub-menu is shown....");
-        //    ResetColor();
-        //}
-
         private void PrintHeader()
         {
             SetColor(ConsoleColor.DarkRed);
@@ -85,6 +75,9 @@ namespace Capstone.Views
             ResetColor();
         }
 
+        /// <summary>
+        /// Helper method to perform the reservation search and prompt user for additional input
+        /// </summary>
         private void ReservationSearch()
         {
             // Display a list of all parks for the user to choose from
@@ -164,6 +157,10 @@ namespace Capstone.Views
 
             return;
         }
+
+        /// <summary>
+        /// Helper method to perform a search parkwide
+        /// </summary>
         private void ReservationSearchByPark()
         {
             // Display a list of all parks for the user to choose from
@@ -193,8 +190,9 @@ namespace Capstone.Views
                 int maxOccupancyRequired = GetInteger("What is the max occupancy required: ");
                 bool isAccessible = GetBool("Do you need a weelchair accessible site (y/n): ");
                 int rvSizeRequired = GetInteger("What size RV parking is required (Enter 0 for no RV): ");
-
                 bool isHookupRequired = GetBool("Do you need utility hookups (y/n): ");
+
+                // Build a list of campsites by iterating over all campgrounds at the park and then all sites at that campground using advanced search
                 foreach (Campground campground in campgrounds)
                 {
                     IList<Site> foundSites = siteDAO.GetAvailableSites(campground.CampgroundId, startDate, endDate, maxOccupancyRequired, isAccessible, rvSizeRequired, isHookupRequired);
@@ -206,6 +204,7 @@ namespace Capstone.Views
             }
             else
             {
+                // Build a list of campsites by iterating over all campgrounds at the park and then all sites at that campground
                 foreach (Campground campground in campgrounds)
                 {
                     IList<Site> foundSites = siteDAO.GetAvailableSites(campground.CampgroundId, startDate, endDate);

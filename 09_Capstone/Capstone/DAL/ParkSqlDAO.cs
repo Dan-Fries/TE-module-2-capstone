@@ -19,9 +19,9 @@ namespace Capstone.DAL
         }
 
         /// <summary>
-        /// Returns a list of all of the employees.
+        /// Returns a list of all of the Parks.
         /// </summary>
-        /// <returns>A list of all employees.</returns>
+        /// <returns>A list of all Parks.</returns>
         public IList<Park> GetAllParks()
         {
             List<Park> parks = new List<Park>();

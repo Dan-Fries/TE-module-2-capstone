@@ -7,10 +7,6 @@ namespace Capstone.DAL
 {
     public interface IReservationDAO
     {
-        //IList<Reservation> GetAllReservations();
-
-        //IList<Reservation> GetAllReservationsByCampgroundId(int campgroundId);
-
         Reservation MakeReservation(int siteNumber, int campgroundId, string name, DateTime startDate, DateTime endDate);
 
         Reservation MakeReservationBySiteId(int siteId, string name, DateTime startDate, DateTime endDate);

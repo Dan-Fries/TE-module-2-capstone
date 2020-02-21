@@ -73,6 +73,7 @@ AND (@endMonth BETWEEN c.open_from_mm AND c.open_to_mm) ";
                     cmd.Parameters.AddWithValue("@startMonth", startDate.Month);
                     cmd.Parameters.AddWithValue("@endMonth", endDate.Month);
 
+                    // Parameterizing the data for advanced search functions, check if data exists before adding parameters
                     if (maxOccupancyRequired.HasValue)
                     {
                         cmd.Parameters.AddWithValue("@maxOccupancyRequired", maxOccupancyRequired);
@@ -98,25 +99,22 @@ AND (@endMonth BETWEEN c.open_from_mm AND c.open_to_mm) ";
             return sites;
         }
 
+        /// <summary>
+        /// Helper Method to convert SQL row data to a Site object
+        /// </summary>
+        /// <param name="rdr"></param>
+        /// <returns></returns>
         private static Site RowToObject(SqlDataReader rdr)
         {
             Site site = new Site();
 
             site.SiteId = Convert.ToInt32(rdr["site_id"]);
-
-
             site.CampgroundId = Convert.ToInt32(rdr["campground_id"]);
-
             site.SiteNumber = Convert.ToInt32(rdr["site_number"]);
-
             site.MaxOccupancy = Convert.ToInt32(rdr["max_occupancy"]);
-           
-
-            site.Accessible = Convert.ToBoolean(rdr["accessible"]);
-
-
             site.MaxRVLength = Convert.ToInt32(rdr["max_rv_length"]);
 
+            site.Accessible = Convert.ToBoolean(rdr["accessible"]);
             site.Utilities = Convert.ToBoolean(rdr["utilities"]);
 
             return site;
@@ -124,60 +122,3 @@ AND (@endMonth BETWEEN c.open_from_mm AND c.open_to_mm) ";
     }
 }
 
-
-//        public IList<Site> GetAvailableSitesAdvanced(int campgroundId, DateTime startDate, DateTime endDate, int maxOccupancyRequired, bool isAccessible, int rvSizeRequired, bool isHookupRequired)
-//        {
-//            List<Site> sites = new List<Site>();
-
-//            int startMonth = startDate.Month;
-//            int endMonth = endDate.Month;
-
-//            try
-//            {
-//                using (SqlConnection conn = new SqlConnection(connectionString))
-//                {
-//                    conn.Open();
-
-//                    string sql =
-//@"SELECT TOP 5 * FROM site s
-//JOIN campground c ON s.campground_id = c.campground_id
-//WHERE s.campground_id = @campgroundId 
-//AND s.site_id NOT IN (SELECT site_id FROM reservation WHERE (from_date BETWEEN @startDate AND @endDate OR to_date BETWEEN @startDate AND @endDate))
-//AND (@startMonth BETWEEN c.open_from_mm AND c.open_to_mm)
-//AND (@endMonth BETWEEN c.open_from_mm AND c.open_to_mm)
-//AND @maxOccupancyRequired <= s.max_occupancy
-//AND @rvSizeRequired <= s.max_rv_length
-//";
-//                    if (isAccessible)
-//                    {
-//                        sql += " AND s.accessible = 1 ";
-//                    }
-//                    if (isHookupRequired)
-//                    {
-//                        sql += " AND s.utility = 1";
-//                    }
-
-//                    SqlCommand cmd = new SqlCommand(sql, conn);
-//                    cmd.Parameters.AddWithValue("@campgroundId", campgroundId);
-//                    cmd.Parameters.AddWithValue("@startDate", startDate);
-//                    cmd.Parameters.AddWithValue("@endDate", endDate);
-//                    cmd.Parameters.AddWithValue("@startMonth", startMonth);
-//                    cmd.Parameters.AddWithValue("@endMonth", endMonth);
-//                    cmd.Parameters.AddWithValue("@maxOccupancyRequired", maxOccupancyRequired);
-//                    cmd.Parameters.AddWithValue("@rvSizeRequired", rvSizeRequired);
-
-//                    SqlDataReader rdr = cmd.ExecuteReader();
-
-//                    while (rdr.Read())
-//                    {
-//                        sites.Add(RowToObject(rdr));
-//                    }
-//                }
-//            }
-//            catch (SqlException ex)
-//            {
-//                Console.WriteLine(ex.Message);
-//            }
-
-//            return sites;
-//        }

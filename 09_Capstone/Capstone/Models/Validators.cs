@@ -67,6 +67,11 @@ namespace Capstone.Models
             return validSelections;
         }
 
+        /// <summary>
+        /// Method to build a list of valid selections for a given list of sites in order to validate user input
+        /// </summary>
+        /// <param name="sites"></param>
+        /// <returns>A list of integers representing valid selections for site Id</returns>
         public static List<int> GetValidSiteId(IList<Site> sites)
         {
             List<int> validSelections = new List<int>();

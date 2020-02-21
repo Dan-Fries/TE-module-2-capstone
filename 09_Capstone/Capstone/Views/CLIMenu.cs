@@ -143,7 +143,7 @@ namespace Capstone.Views
         /// </summary>
         /// <param name="message"></param>
         /// <param name="validSelections"></param>
-        /// <returns></returns>
+        /// <returns>The user selected validated integer</returns>
         static public int GetValidInteger(string message, List<int> validSelections)
         {
             int resultValue = 0;

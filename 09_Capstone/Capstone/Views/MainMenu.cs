@@ -15,10 +15,9 @@ namespace Capstone.Views
         protected ICampgroundDAO campgroundDAO;
         protected ISiteDAO siteDAO;
         protected IReservationDAO reservationDAO;
-        //protected ICountryDAO countryDAO;
 
         /// <summary>
-        /// Constructor adds items to the top-level menu. YOu will likely have parameters for one or more DAO's here...
+        /// Constructor adds items to the top-level menu.
         /// </summary>
         public MainMenu(IParkDAO parkDAO, ICampgroundDAO campgroundDAO, ISiteDAO siteDAO, IReservationDAO reservationDAO) : base("Main Menu")
         {
@@ -49,15 +48,15 @@ namespace Capstone.Views
                 case "1": // Display all parks with summary information
                     ObjectListViews.DisplayParksDetailedView(parkDAO.GetAllParks());
                     Pause("");
-                    return true;    // Keep running the main menu
-                case "2": // Display all the campgrounds at a selected national park
+                    return true;
+                case "2": // Display all the campgrounds at a selected national park by calling DisplayCampgroundByPark method
                     DisplayCampgroundsByPark();
                     Pause("");
-                    return true;    // Keep running the main menu
+                    return true;
                 case "3": // Create and show the reservation sub-menu
                     ReservationMenu rm = new ReservationMenu(parkDAO, campgroundDAO, siteDAO, reservationDAO);
                     rm.Run();
-                    return true;    // Keep running the main menu
+                    return true;
             }
             return true;
         }
@@ -66,7 +65,6 @@ namespace Capstone.Views
         {         
             PrintHeader();
         }
-
 
         private void PrintHeader()
         {
@@ -93,6 +91,5 @@ namespace Capstone.Views
             // Display the campgrounds at the selected national park
             ObjectListViews.DisplayCampgrounds(campgroundDAO.GetCampgroundsByParkId(parkId));
         }
-
     }
 }

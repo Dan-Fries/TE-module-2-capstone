@@ -19,16 +19,14 @@ namespace Capstone
 
             string connectionString = configuration.GetConnectionString("Project");
 
-            /********************************************************************
-            // If you do not want to use CLIMenu, you can remove the following
-            *********************************************************************/
-            // Create any DAOs needed here, and then pass them into main menu...
+            // Instantiate a DAO of each type to pass to the menus
             IParkDAO parkDAO = new ParkSqlDAO(connectionString);
             ICampgroundDAO campgroundDAO = new CampgroundSqlDAO(connectionString);
             ISiteDAO siteDAO = new SiteSqlDAO(connectionString);
             IReservationDAO reservationDAO = new ReservationSqlDAO(connectionString);
 
-            MainMenu mainMenu = new MainMenu(parkDAO, campgroundDAO, siteDAO, reservationDAO);  // You'll probably be adding daos to the constructor
+            // Create a new main menu object and pass in all the DAOS
+            MainMenu mainMenu = new MainMenu(parkDAO, campgroundDAO, siteDAO, reservationDAO);  
 
             // Run the menu.
             mainMenu.Run();

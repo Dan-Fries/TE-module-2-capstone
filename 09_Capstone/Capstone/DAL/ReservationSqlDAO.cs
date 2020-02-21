@@ -18,69 +18,15 @@ namespace Capstone.DAL
             connectionString = dbConnectionString;
         }
 
-        //public IList<Reservation> GetAllReservations()
-        //{
-        //    List<Reservation> reservations = new List<Reservation>();
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        {
-        //            conn.Open();
-
-        //            string sql = "SELECT * FROM reservation";
-
-        //            SqlCommand cmd = new SqlCommand(sql, conn);
-        //            SqlDataReader rdr = cmd.ExecuteReader();
-
-        //            while (rdr.Read())
-        //            {
-        //                reservations.Add(RowToObject(rdr));
-        //            }
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-
-        //    return reservations;
-        //}
-
-//        public IList<Reservation> GetAllReservationsByCampgroundId(int campgroundId)
-//        {
-//            List<Reservation> reservations = new List<Reservation>();
-
-//            try
-//            {
-//                using (SqlConnection conn = new SqlConnection(connectionString))
-//                {
-//                    conn.Open();
-
-//                    string sql =
-//@"SELECT * FROM reservation r
-//JOIN site s ON r.site_id = s.site_id
-//WHERE s.campground_id = @campgroundId";
-
-//                    SqlCommand cmd = new SqlCommand(sql, conn);
-//                    cmd.Parameters.AddWithValue("@campgroundId", campgroundId);
-
-//                    SqlDataReader rdr = cmd.ExecuteReader();
-
-//                    while (rdr.Read())
-//                    {
-//                        reservations.Add(RowToObject(rdr));
-//                    }
-//                }
-//            }
-//            catch (SqlException ex)
-//            {
-//                Console.WriteLine(ex.Message);
-//            }
-
-//            return reservations;
-//        }
-
+        /// <summary>
+        /// Method to create a new reservation in the database using site number
+        /// </summary>
+        /// <param name="siteNumber"></param>
+        /// <param name="campgroundId"></param>
+        /// <param name="name"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>A reservation object holding information about the created reservation</returns>
         public Reservation MakeReservation(int siteNumber, int campgroundId, string name, DateTime startDate, DateTime endDate)
         {
             Reservation reservation = null;
@@ -124,6 +70,14 @@ Select @@identity;";
             return reservation;
         }
 
+        /// <summary>
+        /// Method to create a new reservation in the database using site Id
+        /// </summary>
+        /// <param name="siteId"></param>
+        /// <param name="name"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>A reservation object holding information about the created reservation</returns>
         public Reservation MakeReservationBySiteId(int siteId, string name, DateTime startDate, DateTime endDate)
         {
             Reservation reservation = null;
@@ -166,6 +120,12 @@ Select @@identity;";
             return reservation;
         }
 
+        /// <summary>
+        /// Method to get all reservations for a specified date range
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>A list of reservation objects matching the parameters</returns>
         public IList<Reservation> ViewAllUpcomingReservations(DateTime startDate, DateTime endDate)
         {
             IList<Reservation> reservations = new List<Reservation>();
